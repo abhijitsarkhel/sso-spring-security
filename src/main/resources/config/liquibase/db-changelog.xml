@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<preConditions>
+		<runningAs username="SA" />
+	</preConditions>
+	
+	<!-- Create tables -->
+	<changeSet id="create-table-domain-001"
+		author="abhijit.s">
+		<createTable tableName="domain">
+			<column name="id" type="bigint">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="name" type="VARCHAR(255)">
+				<constraints unique="true" />
+			</column>
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="create-table-sub-domain-001"
+		author="abhijit.s">
+		<createTable tableName="sub_domain">
+			<column name="id" type="bigint">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="oid" type="bigint" />
+			<column name="name" type="VARCHAR(255)" />
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="create-table-app-001"
+		author="abhijit.s">
+		<createTable tableName="app">
+			<column name="id" type="bigint">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="sub_dom_id" type="bigint" />
+			<column name="name" type="VARCHAR(255)" />
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="create-table-ousers-001"
+		author="abhijit.s">
+		<createTable tableName="ousers">
+			<column name="id" type="bigint">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="oid" type="bigint" />
+			<column name="sub_domains" type="VARCHAR(255)" />
+			<column name="enabled" type="boolean" />
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="create-table-ausers-001"
+		author="abhijit.s">
+		<createTable tableName="ausers">
+			<column name="id" type="bigint">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="uid" type="bigint" />
+			<column name="aid" type="bigint" />
+			<column name="enabled" type="boolean" />
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="create-table-ocredentials-001"
+		author="abhijit.s">
+		<createTable tableName="ocredentials">
+			<column name="id" type="bigint">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="uid" type="bigint" />
+			<column name="oid" type="bigint" />
+			<column name="email" type="VARCHAR(255)">
+				<constraints unique="true" />
+			</column>
+			<column name="passwd" type="VARCHAR(255)" />
+			<column name="roles" type="VARCHAR(255)" />
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="create-table-acredentials-001"
+		author="abhijit.s">
+		<createTable tableName="acredentials">
+			<column name="id" type="bigint">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="uid" type="bigint" />
+			<column name="aid" type="bigint" />
+			<column name="passwd" type="VARCHAR(255)" />
+			<column name="roles" type="VARCHAR(255)" />
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="create-table-oroles-001"
+		author="abhijit.s">
+		<createTable tableName="oroles">
+			<column name="id" type="bigint">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="oid" type="bigint" />
+			<column name="name" type="VARCHAR(255)">
+				<constraints unique="true" />
+			</column>
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="create-table-sdroles-001"
+		author="abhijit.s">
+		<createTable tableName="sdroles">
+			<column name="id" type="bigint">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="sid" type="bigint" />
+			<column name="name" type="VARCHAR(255)">
+				<constraints unique="true" />
+			</column>
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="create-table-aroles-001"
+		author="abhijit.s">
+		<createTable tableName="aroles">
+			<column name="id" type="bigint">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="aid" type="bigint" />
+			<column name="name" type="VARCHAR(255)">
+				<constraints unique="true" />
+			</column>
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="create-table-oa-role-mapping-001"
+		author="abhijit.s">
+		<createTable tableName="oa_role_mapping">
+			<column name="id" type="bigint">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="oid" type="bigint" />
+			<column name="aid" type="bigint" />
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="create-table-sda-role-mapping-001"
+		author="abhijit.s">
+		<createTable tableName="sda_role_mapping">
+			<column name="id" type="bigint">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="sid" type="bigint" />
+			<column name="aid" type="bigint" />
+		</createTable>
+	</changeSet>
+	
+	
+	<!-- Foreign Keys -->
+	
+	
+	<changeSet
+		id="create-foreign-key-sub-domain-dom-id-001"
+		author="abhijit.s">
+		<addForeignKeyConstraint
+			constraintName="fk_sub_domain_dom_id"
+			referencedTableName="domain" baseColumnNames="dom_id"
+			baseTableName="sub_domain" referencedColumnNames="id"
+			onDelete="CASCADE" onUpdate="RESTRICT" />
+	</changeSet>
+	
+	<changeSet
+		id="create-foreign-key-app-sub-dom-id-001"
+		author="abhijit.s">
+		<addForeignKeyConstraint
+			constraintName="fk_app_sub_dom_id"
+			referencedTableName="domain" baseColumnNames="sub_dom_id"
+			baseTableName="app" referencedColumnNames="id"
+			onDelete="CASCADE" onUpdate="RESTRICT" />
+	</changeSet>
+	
+	<changeSet
+		id="create-foreign-key-ousers-dom-id-001"
+		author="abhijit.s">
+		<addForeignKeyConstraint
+			constraintName="fk_ousers_dom_id"
+			referencedTableName="domain" baseColumnNames="dom_id"
+			baseTableName="ousers" referencedColumnNames="id"
+			onDelete="CASCADE" onUpdate="RESTRICT" />
+	</changeSet>
+	
+	<changeSet
+		id="create-foreign-key-ausers-uid-001"
+		author="abhijit.s">
+		<addForeignKeyConstraint
+			constraintName="fk_ausers_uid"
+			referencedTableName="ousers" baseColumnNames="uid"
+			baseTableName="ausers" referencedColumnNames="id"
+			onDelete="CASCADE" onUpdate="RESTRICT" />
+	</changeSet>
+	
+	<changeSet
+		id="create-foreign-key-ausers-aid-001"
+		author="abhijit.s">
+		<addForeignKeyConstraint
+			constraintName="fk_ausers_aid"
+			referencedTableName="ousers" baseColumnNames="aid"
+			baseTableName="app" referencedColumnNames="id"
+			onDelete="CASCADE" onUpdate="RESTRICT" />
+	</changeSet>
+	
+	<changeSet
+		id="create-foreign-key-ocredentials-uid-001"
+		author="abhijit.s">
+		<addForeignKeyConstraint
+			constraintName="fk_ocredentials_ud"
+			referencedTableName="ousers" baseColumnNames="uid"
+			baseTableName="ocredentials" referencedColumnNames="id"
+			onDelete="CASCADE" onUpdate="RESTRICT" />
+	</changeSet>
+	
+	<changeSet
+		id="create-foreign-key-ocredentials-oid-001"
+		author="abhijit.s">
+		<addForeignKeyConstraint
+			constraintName="fk_ocredentials_oid"
+			referencedTableName="domain" baseColumnNames="oid"
+			baseTableName="ocredentials" referencedColumnNames="id"
+			onDelete="CASCADE" onUpdate="RESTRICT" />
+	</changeSet>
+	
+	<changeSet
+		id="create-foreign-key-acredentials-uid-001"
+		author="abhijit.s">
+		<addForeignKeyConstraint
+			constraintName="fk_acredentials_uid"
+			referencedTableName="ousers" baseColumnNames="uid"
+			baseTableName="acredentials" referencedColumnNames="id"
+			onDelete="CASCADE" onUpdate="RESTRICT" />
+	</changeSet>
+	
+	<changeSet
+		id="create-foreign-key-acredentials-aid-001"
+		author="abhijit.s">
+		<addForeignKeyConstraint
+			constraintName="fk_acredentials_aid"
+			referencedTableName="app" baseColumnNames="aid"
+			baseTableName="acredentials" referencedColumnNames="id"
+			onDelete="CASCADE" onUpdate="RESTRICT" />
+	</changeSet>
+	
+	<changeSet
+		id="create-foreign-key-oroles-oid-001"
+		author="abhijit.s">
+		<addForeignKeyConstraint
+			constraintName="fk_oroles_oid"
+			referencedTableName="domain" baseColumnNames="oid"
+			baseTableName="oroles" referencedColumnNames="id"
+			onDelete="CASCADE" onUpdate="RESTRICT" />
+	</changeSet>
+	
+	<changeSet
+		id="create-foreign-key-sdroles-sid-001"
+		author="abhijit.s">
+		<addForeignKeyConstraint
+			constraintName="fk_sdroles_sid"
+			referencedTableName="sub_domain" baseColumnNames="sid"
+			baseTableName="sdroles" referencedColumnNames="id"
+			onDelete="CASCADE" onUpdate="RESTRICT" />
+	</changeSet>
+	
+	<changeSet
+		id="create-foreign-key-aroles-aid-001"
+		author="abhijit.s">
+		<addForeignKeyConstraint
+			constraintName="fk_aroles_aid"
+			referencedTableName="app" baseColumnNames="aid"
+			baseTableName="aroles" referencedColumnNames="id"
+			onDelete="CASCADE" onUpdate="RESTRICT" />
+	</changeSet>
+	
+	<changeSet
+		id="create-foreign-key-oa-role-mapping-oid-001"
+		author="abhijit.s">
+		<addForeignKeyConstraint
+			constraintName="fk_oa_role_mapping_oid"
+			referencedTableName="domain" baseColumnNames="oid"
+			baseTableName="oa_role_mapping" referencedColumnNames="id"
+			onDelete="CASCADE" onUpdate="RESTRICT" />
+	</changeSet>
+	
+	<changeSet
+		id="create-foreign-key-oa-role-mapping-aid-001"
+		author="abhijit.s">
+		<addForeignKeyConstraint
+			constraintName="fk_oa_role_mapping_aid"
+			referencedTableName="app" baseColumnNames="aid"
+			baseTableName="oa_role_mapping" referencedColumnNames="id"
+			onDelete="CASCADE" onUpdate="RESTRICT" />
+	</changeSet>
+	
+	<changeSet
+		id="create-foreign-key-sda-role-mapping-aid-001"
+		author="abhijit.s">
+		<addForeignKeyConstraint
+			constraintName="fk_sda_role_mapping_aid"
+			referencedTableName="app" baseColumnNames="aid"
+			baseTableName="sda_role_mapping" referencedColumnNames="id"
+			onDelete="CASCADE" onUpdate="RESTRICT" />
+	</changeSet>
+	
+	<changeSet
+		id="create-foreign-key-sda-role-mapping-sid-001"
+		author="abhijit.s">
+		<addForeignKeyConstraint
+			constraintName="fk_sda_role_mapping_sid"
+			referencedTableName="sub_domain" baseColumnNames="sid"
+			baseTableName="sda_role_mapping" referencedColumnNames="id"
+			onDelete="CASCADE" onUpdate="RESTRICT" />
+	</changeSet>
+	
+	
+</databaseChangeLog>

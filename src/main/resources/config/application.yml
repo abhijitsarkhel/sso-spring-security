@@ -1,0 +1,6 @@
+spring:
+   profiles: dev
+   name: application-dev
+   environment: dev
+   servers: 
+   - www.indigenous.dev.in/sso
