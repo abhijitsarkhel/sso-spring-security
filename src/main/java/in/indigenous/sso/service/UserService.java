@@ -1,8 +1,9 @@
 package in.indigenous.sso.service;
 
-import in.indigenous.sso.dto.UserCredentials;
-import in.indigenous.sso.dto.UserDTO;
-import in.indigenous.sso.dto.UserRole;
+import org.springframework.data.authentication.UserCredentials;
+
+import in.indigenous.sso.security.dto.UserDTO;
+import in.indigenous.sso.security.dto.UserRole;
 
 public interface UserService {
 	

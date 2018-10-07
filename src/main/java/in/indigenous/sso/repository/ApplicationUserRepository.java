@@ -15,5 +15,5 @@ import in.indigenous.sso.model.DomainUser;
 @Transactional
 public interface ApplicationUserRepository extends JpaRepository<ApplicationUser, BigInteger> {
 
-	ApplicationUser findByUserAndApplication(DomainUser user, Application application);
+	ApplicationUser findByUserAndApplication(DomainUser domainUser, Application application);
 }

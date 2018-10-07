@@ -1,13 +1,13 @@
 package in.indigenous.sso.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.authentication.UserCredentials;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import in.indigenous.sso.dto.UserCredentials;
-import in.indigenous.sso.dto.UserDTO;
-import in.indigenous.sso.dto.UserRole;
+import in.indigenous.sso.security.dto.UserDTO;
+import in.indigenous.sso.security.dto.UserRole;
 import in.indigenous.sso.service.UserService;
 
 @RestController("/user")
