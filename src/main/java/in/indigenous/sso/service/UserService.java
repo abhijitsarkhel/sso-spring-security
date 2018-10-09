@@ -1,7 +1,6 @@
 package in.indigenous.sso.service;
 
-import org.springframework.data.authentication.UserCredentials;
-
+import in.indigenous.sso.security.dto.UserCredentialsDTO;
 import in.indigenous.sso.security.dto.UserDTO;
 import in.indigenous.sso.security.dto.UserRole;
 
@@ -15,10 +14,12 @@ public interface UserService {
 	
 	void createRole(UserRole role);
 	
-	void createUser(UserCredentials credentials);
+	void createUser(UserCredentialsDTO credentials);
 	
-	void disableUser(UserCredentials credentials);
+	void enableUser(UserCredentialsDTO credentials);
 	
-	UserDTO authenticate(UserCredentials credentials);
+	void disableUser(UserCredentialsDTO credentials);
+	
+	UserDTO authenticate(UserCredentialsDTO credentials);
 	
 }

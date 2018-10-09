@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import in.indigenous.sso.security.dto.UserCredentialsDTO;
 import in.indigenous.sso.security.dto.UserDTO;
 import in.indigenous.sso.security.dto.UserRole;
 import in.indigenous.sso.service.UserService;
@@ -37,22 +38,22 @@ public class UserController {
 	}
 
 	@PostMapping("/create")
-	public void createUser(UserCredentials credentials) {
+	public void createUser(UserCredentialsDTO credentials) {
 		userService.createUser(credentials);
 	}
 
 	@PostMapping("/disable")
-	public void disableUser(UserCredentials credentials) {
+	public void disableUser(UserCredentialsDTO credentials) {
 		userService.disableUser(credentials);
 	}
 
 	@PostMapping("/enable")
-	public void enableUser(UserCredentials credentials) {
+	public void enableUser(UserCredentialsDTO credentials) {
 		userService.disableUser(credentials);
 	}
 
 	@PostMapping("/authenticate")
-	public UserDTO authenticate(UserCredentials credentials) {
+	public UserDTO authenticate(UserCredentialsDTO credentials) {
 		return userService.authenticate(credentials);
 	}
 
