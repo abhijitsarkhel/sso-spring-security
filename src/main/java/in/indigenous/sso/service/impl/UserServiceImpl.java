@@ -1,8 +1,11 @@
 package in.indigenous.sso.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -27,8 +30,8 @@ import in.indigenous.sso.repository.DomainRoleRepository;
 import in.indigenous.sso.repository.DomainUserRepository;
 import in.indigenous.sso.repository.SubDomainRepository;
 import in.indigenous.sso.security.crypto.EncoderDecoder;
+import in.indigenous.sso.security.dto.SSOUser;
 import in.indigenous.sso.security.dto.UserCredentialsDTO;
-import in.indigenous.sso.security.dto.UserDTO;
 import in.indigenous.sso.security.dto.UserRole;
 import in.indigenous.sso.service.UserService;
 
@@ -57,7 +60,7 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private ApplicationUserRepository applicationUserRepository;
-	
+
 	@Autowired
 	private EncoderDecoder passwordEncoder;
 
@@ -171,12 +174,12 @@ public class UserServiceImpl implements UserService {
 		}
 		if (StringUtils.isEmpty(subDomainName)) {
 			Domain domain = domainRepository.findByName(domainName);
-			if(domain == null) {
-				//TODO throw error
+			if (domain == null) {
+				// TODO throw error
 			}
-			
+
 			DomainCredential userCredential = domainCredentialRepository.findByDomainAndEmail(domain, userName);
-			if(userCredential == null) {
+			if (userCredential == null) {
 				// TODO throw error
 			}
 			DomainUser user = userCredential.getDomainUser();
@@ -184,24 +187,24 @@ public class UserServiceImpl implements UserService {
 			domainUserRepository.save(user);
 		} else {
 			Domain domain = domainRepository.findByName(domainName);
-			if(domain == null) {
-				//TODO throw error
+			if (domain == null) {
+				// TODO throw error
 			}
 			SubDomain subDomain = subDomainRepository.findByDomainAndName(domain, subDomainName);
-			if(subDomain == null) {
-				//TODO throw error
+			if (subDomain == null) {
+				// TODO throw error
 			}
 			Application application = applicationRepository.findBySubDomainAndName(subDomain, applicationName);
-			if(application == null) {
-				//TODO throw error
+			if (application == null) {
+				// TODO throw error
 			}
 			DomainCredential userCredential = domainCredentialRepository.findByDomainAndEmail(domain, userName);
-			if(userCredential == null) {
+			if (userCredential == null) {
 				// TODO throw error
 			}
 			DomainUser user = userCredential.getDomainUser();
 			ApplicationUser appUser = applicationUserRepository.findByUserAndApplication(user, application);
-			if(appUser == null) {
+			if (appUser == null) {
 				// TODO throw error
 			}
 			appUser.setEnabled(true);
@@ -224,12 +227,12 @@ public class UserServiceImpl implements UserService {
 		}
 		if (StringUtils.isEmpty(subDomainName)) {
 			Domain domain = domainRepository.findByName(domainName);
-			if(domain == null) {
-				//TODO throw error
+			if (domain == null) {
+				// TODO throw error
 			}
-			
+
 			DomainCredential userCredential = domainCredentialRepository.findByDomainAndEmail(domain, userName);
-			if(userCredential == null) {
+			if (userCredential == null) {
 				// TODO throw error
 			}
 			DomainUser user = userCredential.getDomainUser();
@@ -237,24 +240,24 @@ public class UserServiceImpl implements UserService {
 			domainUserRepository.save(user);
 		} else {
 			Domain domain = domainRepository.findByName(domainName);
-			if(domain == null) {
-				//TODO throw error
+			if (domain == null) {
+				// TODO throw error
 			}
 			SubDomain subDomain = subDomainRepository.findByDomainAndName(domain, subDomainName);
-			if(subDomain == null) {
-				//TODO throw error
+			if (subDomain == null) {
+				// TODO throw error
 			}
 			Application application = applicationRepository.findBySubDomainAndName(subDomain, applicationName);
-			if(application == null) {
-				//TODO throw error
+			if (application == null) {
+				// TODO throw error
 			}
 			DomainCredential userCredential = domainCredentialRepository.findByDomainAndEmail(domain, userName);
-			if(userCredential == null) {
+			if (userCredential == null) {
 				// TODO throw error
 			}
 			DomainUser user = userCredential.getDomainUser();
 			ApplicationUser appUser = applicationUserRepository.findByUserAndApplication(user, application);
-			if(appUser == null) {
+			if (appUser == null) {
 				// TODO throw error
 			}
 			appUser.setEnabled(false);
@@ -263,9 +266,42 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDTO authenticate(UserCredentialsDTO credentials) {
-		// TODO Auto-generated method stub
-		return null;
+	public SSOUser authenticate(UserCredentialsDTO credentials) {
+		String domainName = credentials.getDomain();
+		Domain domain = domainRepository.findByName(domainName);
+		String userName = credentials.getEmail();
+		SSOUser user = new SSOUser();
+		user.setDomain(domainName);
+		user.setEmail(userName);
+		DomainCredential credential = domainCredentialRepository.findByDomainAndEmail(domain, userName);
+		user.setSubDomains(subDomainToList(domainName, credential.getDomainUser().getSubDomains()).stream().map(s -> {
+			return s.getName();
+		}).collect(Collectors.toList()));
+		user.setDomainRoles(domainRoleRepository.findByDomain(domain).stream().map(r -> {
+			return r.getName();
+		}).collect(Collectors.toList()));
+		user.setEnabled(credential.getDomainUser().isEnabled());
+		user.setApps(getDomainApps(domain.getName(), credential.getEmail()));
+		user.setAppRoles(getAppRoles(domain.getName(), credential.getEmail()));
+		return user;
+	}
+
+	@Override
+	public List<SSOUser> getAllUsersForDomain(String domain) {
+		List<DomainCredential> credentials = domainCredentialRepository.findAll();
+		List<SSOUser> users = new ArrayList<>();
+		for (DomainCredential credential : credentials) {
+			DomainUser user = credential.getDomainUser();
+			SSOUser ssoUser = new SSOUser();
+			ssoUser.setDomain(user.getDomain().getName());
+			ssoUser.setEmail(credential.getEmail());
+			ssoUser.setSubDomains(subDomainToList(user.getDomain().getName(), user.getSubDomains()).stream()
+					.map(s -> s.getName()).collect(Collectors.toList()));
+			ssoUser.setEnabled(user.isEnabled());
+			ssoUser.setApps(getDomainApps(user.getDomain().getName(), credential.getEmail()));
+			users.add(ssoUser);
+		}
+		return users;
 	}
 
 	private void createDomainRole(String domainName, String roleName,
@@ -398,6 +434,102 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		return builder.toString();
+	}
+
+	@SuppressWarnings("unused")
+	private List<Domain> domainToList(String list) {
+		List<String> items = Arrays.asList(StringUtils.split(list, ","));
+		List<Domain> result = new ArrayList<>();
+		for (String item : items) {
+			Domain domain = domainRepository.findByName(item);
+			if (domain == null) {
+				// TODO throw error
+			}
+			result.add(domain);
+		}
+		return result;
+	}
+
+	private List<SubDomain> subDomainToList(String domainName, String list) {
+		List<String> items = Arrays.asList(StringUtils.split(list, ","));
+		Domain domain = domainRepository.findByName(domainName);
+		if (domain == null) {
+			// TODO throw error
+		}
+		List<SubDomain> result = new ArrayList<>();
+		for (String item : items) {
+			SubDomain subDomain = subDomainRepository.findByDomainAndName(domain, item);
+			if (subDomain == null) {
+				// TODO throw error
+			}
+			result.add(subDomain);
+		}
+		return result;
+	}
+
+	@SuppressWarnings("unused")
+	private List<Application> applicationToList(String domainName, String subDomainName, String list) {
+		List<String> items = Arrays.asList(StringUtils.split(list, ","));
+		Domain domain = domainRepository.findByName(domainName);
+		if (domain == null) {
+			// TODO throw error
+		}
+		SubDomain subDomain = subDomainRepository.findByDomainAndName(domain, subDomainName);
+		if (subDomain == null) {
+			// TODO throw error
+		}
+		List<Application> result = new ArrayList<>();
+		for (String item : items) {
+			Application application = applicationRepository.findBySubDomainAndName(subDomain, item);
+			if (application == null) {
+				// TODO throw error
+			}
+			result.add(application);
+		}
+		return result;
+	}
+
+	private List<Map<String, List<String>>> getDomainApps(String domainName, String email) {
+		List<Map<String, List<String>>> result = new ArrayList<>();
+		Domain domain = domainRepository.findByName(domainName);
+		DomainCredential credential = domainCredentialRepository.findByDomainAndEmail(domain, email);
+		DomainUser user = credential.getDomainUser();
+		String subDomainIds = user.getSubDomains();
+		List<SubDomain> subDomainList = subDomainToList(domainName, subDomainIds);
+		for (SubDomain subDomain : subDomainList) {
+			Map<String, List<String>> subDomainApps = new HashMap<>();
+			List<Application> applications = applicationRepository.findBySubDomain(subDomain);
+			subDomainApps.put(subDomain.getName(), applications.stream().map(a -> {
+				return a.getName();
+			}).collect(Collectors.toList()));
+			result.add(subDomainApps);
+		}
+		return result;
+	}
+
+	private List<Map<String, List<Map<String, List<String>>>>> getAppRoles(String domainName, String email) {
+		List<Map<String, List<Map<String, List<String>>>>> result = new ArrayList<>();
+		Domain domain = domainRepository.findByName(domainName);
+		DomainCredential credential = domainCredentialRepository.findByDomainAndEmail(domain, email);
+		DomainUser user = credential.getDomainUser();
+		String subDomainIds = user.getSubDomains();
+		List<SubDomain> subDomainList = subDomainToList(domainName, subDomainIds);
+		Map<String, List<Map<String, List<String>>>> subDomainApps = new HashMap<>();
+		for (SubDomain subDomain : subDomainList) {
+			List<Application> applications = applicationRepository.findBySubDomain(subDomain);
+			List<Map<String, List<String>>> appList = new ArrayList<>();
+			for (Application application : applications) {
+				Map<String, List<String>> appRoles = new HashMap<>();
+				appRoles.put(application.getName(),
+						applicationRoleRepository.findByApplication(application).stream().map(r -> {
+							return r.getName();
+						}).collect(Collectors.toList()));
+				appList.add(appRoles);
+			}
+			subDomainApps.put(subDomain.getName(), appList);
+			result.add(subDomainApps);
+		}
+		return result;
 	}
 
 }

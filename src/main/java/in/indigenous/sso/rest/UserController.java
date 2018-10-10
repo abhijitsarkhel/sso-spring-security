@@ -1,10 +1,14 @@
 package in.indigenous.sso.rest;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import in.indigenous.sso.security.dto.SSOUser;
 import in.indigenous.sso.security.dto.UserCredentialsDTO;
 import in.indigenous.sso.security.dto.UserDTO;
 import in.indigenous.sso.security.dto.UserRole;
@@ -52,8 +56,13 @@ public class UserController {
 	}
 
 	@PostMapping("/authenticate")
-	public UserDTO authenticate(UserCredentialsDTO credentials) {
+	public SSOUser authenticate(UserCredentialsDTO credentials) {
 		return userService.authenticate(credentials);
+	}
+	
+	@GetMapping("/{domain}/all")
+	public List<SSOUser> getAllUsers(@PathVariable String domain) {
+		return userService.getAllUsersForDomain(domain);
 	}
 
 }

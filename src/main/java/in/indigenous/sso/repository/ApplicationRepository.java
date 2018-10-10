@@ -1,6 +1,7 @@
 package in.indigenous.sso.repository;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -15,4 +16,6 @@ import in.indigenous.sso.model.SubDomain;
 public interface ApplicationRepository extends JpaRepository<Application, BigInteger>{
 
 	Application findBySubDomainAndName(SubDomain subDomain, String name);
+	
+	List<Application> findBySubDomain(SubDomain subDomain);
 }

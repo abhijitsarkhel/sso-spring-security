@@ -1,7 +1,9 @@
 package in.indigenous.sso.service;
 
+import java.util.List;
+
+import in.indigenous.sso.security.dto.SSOUser;
 import in.indigenous.sso.security.dto.UserCredentialsDTO;
-import in.indigenous.sso.security.dto.UserDTO;
 import in.indigenous.sso.security.dto.UserRole;
 
 public interface UserService {
@@ -20,6 +22,8 @@ public interface UserService {
 	
 	void disableUser(UserCredentialsDTO credentials);
 	
-	UserDTO authenticate(UserCredentialsDTO credentials);
+	SSOUser authenticate(UserCredentialsDTO credentials);
+	
+	List<SSOUser> getAllUsersForDomain(String app);
 	
 }

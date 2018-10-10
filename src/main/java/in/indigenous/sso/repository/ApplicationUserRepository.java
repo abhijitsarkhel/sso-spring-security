@@ -1,6 +1,7 @@
 package in.indigenous.sso.repository;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -16,4 +17,6 @@ import in.indigenous.sso.model.DomainUser;
 public interface ApplicationUserRepository extends JpaRepository<ApplicationUser, BigInteger> {
 
 	ApplicationUser findByUserAndApplication(DomainUser domainUser, Application application);
+	
+	List<ApplicationUser> findByApplication(Application application);
 }

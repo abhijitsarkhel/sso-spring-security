@@ -1,6 +1,7 @@
 package in.indigenous.sso.repository;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -15,4 +16,6 @@ import in.indigenous.sso.model.ApplicationRole;
 public interface ApplicationRoleRepository extends JpaRepository<ApplicationRole, BigInteger>{
 
 	ApplicationRole findByApplicationAndName(Application application, String name);
+	
+	List<ApplicationRole> findByApplication(Application application);
 }
