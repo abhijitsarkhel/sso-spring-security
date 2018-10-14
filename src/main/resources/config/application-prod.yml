@@ -1,22 +1,22 @@
 server:
-   port: 8082
+   port: 11001
    servlet:
       contextPath: /sso
       
 spring:
    datasource:
-      url: jdbc:h2:~/db/dev/sso.db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      url: jdbc:oracle:thin:@localhost:1521:sso
       database: sso
-      user: SA
-      password:
-      driver-class-name: org.h2.Driver
+      user: sso
+      password: sso
+      driver-class-name: oracle.jdbc.driver.OracleDriver
    liquibase:
       changeLog: classpath:config/liquibase/db-changelog.xml
-      url: jdbc:h2:~/db/dev/sso.db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-      user: SA
-      password:
+      url: jdbc:oracle:thin:@localhost:1521:sso
+      user: sso
+      password: sso
    jpa:
-      database-platform: org.hibernate.dialect.H2Dialect
+      database-platform: org.hibernate.dialect.Oracle12cDialect
       properties:
          hibernate:
             temp:

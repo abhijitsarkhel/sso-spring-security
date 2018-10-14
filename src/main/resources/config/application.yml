@@ -4,3 +4,21 @@ spring:
    environment: dev
    servers: 
    - www.indigenous.dev.in/sso
+   
+---
+ 
+spring:
+  profiles: qa
+  name: application-qa
+  environment: qa
+  servers:
+  - www.indigenous.qa.in/sso
+  
+---
+ 
+spring:
+  profiles: prod
+  name: application-prod
+  environment: prod
+  servers:
+  - www.indigenous.in/sso  
