@@ -168,8 +168,8 @@
 		id="create-foreign-key-sub-domain-dom-id-001"
 		author="abhijit.s">
 		<addForeignKeyConstraint
-			constraintName="fk_sub_domain_dom_id"
-			referencedTableName="domain" baseColumnNames="dom_id"
+			constraintName="fk_sub_domain_oid"
+			referencedTableName="domain" baseColumnNames="oid"
 			baseTableName="sub_domain" referencedColumnNames="id"
 			onDelete="CASCADE" onUpdate="RESTRICT" />
 	</changeSet>
@@ -189,7 +189,7 @@
 		author="abhijit.s">
 		<addForeignKeyConstraint
 			constraintName="fk_ousers_dom_id"
-			referencedTableName="domain" baseColumnNames="dom_id"
+			referencedTableName="domain" baseColumnNames="oid"
 			baseTableName="ousers" referencedColumnNames="id"
 			onDelete="CASCADE" onUpdate="RESTRICT" />
 	</changeSet>
@@ -209,8 +209,8 @@
 		author="abhijit.s">
 		<addForeignKeyConstraint
 			constraintName="fk_ausers_aid"
-			referencedTableName="ousers" baseColumnNames="aid"
-			baseTableName="app" referencedColumnNames="id"
+			referencedTableName="app" baseColumnNames="aid"
+			baseTableName="ausers" referencedColumnNames="id"
 			onDelete="CASCADE" onUpdate="RESTRICT" />
 	</changeSet>
 	
