@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import in.indigenous.sso.model.Application;
 import in.indigenous.sso.model.ApplicationCredential;
@@ -35,6 +36,7 @@ import in.indigenous.sso.security.dto.UserCredentialsDTO;
 import in.indigenous.sso.security.dto.UserRole;
 import in.indigenous.sso.service.UserService;
 
+@Service
 public class UserServiceImpl implements UserService {
 
 	@Autowired
@@ -203,7 +205,7 @@ public class UserServiceImpl implements UserService {
 				// TODO throw error
 			}
 			DomainUser user = userCredential.getDomainUser();
-			ApplicationUser appUser = applicationUserRepository.findByUserAndApplication(user, application);
+			ApplicationUser appUser = applicationUserRepository.findByDomainUserAndApplication(application, user);
 			if (appUser == null) {
 				// TODO throw error
 			}
@@ -256,7 +258,7 @@ public class UserServiceImpl implements UserService {
 				// TODO throw error
 			}
 			DomainUser user = userCredential.getDomainUser();
-			ApplicationUser appUser = applicationUserRepository.findByUserAndApplication(user, application);
+			ApplicationUser appUser = applicationUserRepository.findByDomainUserAndApplication(application, user);
 			if (appUser == null) {
 				// TODO throw error
 			}
